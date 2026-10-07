@@ -1,0 +1,403 @@
+
+.navegacao {
+    width: 100%;
+
+    position: relative;
+    z-index: 100;
+
+    background: rgba(15, 11, 26, 0.92);
+
+    border-bottom: 1px solid #31264a;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+
+.nav-container {
+    width: 100%;
+    max-width: 1200px;
+
+    min-height: 76px;
+
+    margin: 0 auto;
+
+    padding: 0 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+}
+
+
+/* =========================
+   LOGO
+========================= */
+
+.nav-logo-container {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    color: white;
+
+    text-align: left;
+}
+
+
+.nav-logo-mark {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: linear-gradient(
+        135deg,
+        #8b5cf6,
+        #6d28d9
+    );
+
+    color: white;
+
+    font-size: 0.85rem;
+    font-weight: 900;
+
+    box-shadow:
+        0 6px 18px rgba(109, 40, 217, 0.3);
+}
+
+
+.nav-logo-text {
+    display: flex;
+    flex-direction: column;
+
+    line-height: 1.1;
+}
+
+
+.nav-logo-text strong {
+    color: #f8fafc;
+
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+
+.nav-logo-text span {
+    margin-top: 3px;
+
+    color: #8d8798;
+
+    font-size: 0.68rem;
+
+    letter-spacing: 0.8px;
+}
+
+
+/* =========================
+   MENU
+========================= */
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+
+.nav-link {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 9px 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #a9a4b2;
+
+    font-family: inherit;
+    font-size: 0.86rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.nav-link span {
+    color: #8b5cf6;
+
+    font-size: 1rem;
+}
+
+
+.nav-link:hover {
+    background: rgba(139, 92, 246, 0.1);
+
+    color: #f8fafc;
+}
+
+
+/* =========================
+   BOTÃO LOGIN
+========================= */
+
+.nav-button-login {
+    margin-left: 8px;
+
+    padding: 9px 18px;
+
+    border: 1px solid #8b5cf6;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #c4b5fd;
+
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.nav-button-login:hover {
+    background: #8b5cf6;
+
+    color: white;
+}
+
+
+/* =========================
+   USUÁRIO
+========================= */
+
+.nav-user {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    margin-left: 8px;
+    padding-left: 15px;
+
+    border-left: 1px solid #31264a;
+}
+
+
+.nav-user-avatar {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(139, 92, 246, 0.15);
+
+    border: 1px solid rgba(139, 92, 246, 0.3);
+
+    color: #c4b5fd;
+
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+
+.nav-user-info {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 90px;
+}
+
+
+.nav-user-info strong {
+    overflow: hidden;
+
+    color: #f8fafc;
+
+    font-size: 0.76rem;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.nav-user-info span {
+    overflow: hidden;
+
+    margin-top: 2px;
+
+    color: #71717a;
+
+    font-size: 0.65rem;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.nav-button-sair {
+    padding: 7px 10px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: #a1a1aa;
+
+    font-family: inherit;
+    font-size: 0.75rem;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.nav-button-sair:hover {
+    background: rgba(239, 68, 68, 0.1);
+
+    color: #f87171;
+}
+
+
+/* =========================
+   MENU MOBILE
+========================= */
+
+.nav-toggle {
+    display: none;
+
+    width: 42px;
+    height: 42px;
+
+    border: 1px solid #31264a;
+    border-radius: 9px;
+
+    background: #171126;
+
+    color: #f8fafc;
+
+    font-size: 1.2rem;
+
+    cursor: pointer;
+}
+
+
+@media (max-width: 850px) {
+
+    .nav-container {
+        min-height: 68px;
+    }
+
+    .nav-toggle {
+        display: block;
+    }
+
+    .nav-menu {
+        position: absolute;
+
+        top: 68px;
+        left: 0;
+        right: 0;
+
+        display: none;
+
+        flex-direction: column;
+        align-items: stretch;
+
+        padding: 15px 20px 20px;
+
+        background: #0f0b1a;
+
+        border-bottom: 1px solid #31264a;
+
+        box-shadow:
+            0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-menu-aberto {
+        display: flex;
+    }
+
+    .nav-link {
+        width: 100%;
+
+        justify-content: flex-start;
+
+        padding: 13px;
+    }
+
+    .nav-button-login {
+        width: 100%;
+
+        margin: 5px 0 0;
+
+        padding: 12px;
+    }
+
+    .nav-user {
+        margin: 8px 0 0;
+        padding: 15px 5px 0;
+
+        border-left: none;
+        border-top: 1px solid #31264a;
+
+        justify-content: flex-start;
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .nav-container {
+        padding: 0 16px;
+    }
+
+    .nav-logo-text strong {
+        font-size: 1rem;
+    }
+
+}
+
