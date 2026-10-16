@@ -5,7 +5,7 @@ class ClienteRequests {
     private endpoint: string;
 
     constructor() {
-        this.endpoint = "http://localhost:3333/api/Cliente";
+        this.endpoint = "http://localhost:3333/clientes";
     }
 
     async criar(item: ClienteDTO) {
@@ -30,15 +30,22 @@ class ClienteRequests {
                 let mensagem = "Erro ao cadastrar cliente.";
 
                 if (corpo) {
-                    try {
-                        const dados = JSON.parse(corpo) as {
-                            message?: string;
-                            error?: string;
-                            detail?: string;
-                        };
-                        mensagem = dados.message ?? dados.error ?? dados.detail ?? corpo;
-                    } catch {
-                        mensagem = corpo;
+                    if (response.status === 404 && /Cannot POST/i.test(corpo)) {
+                        mensagem = "A rota de cadastro de clientes não foi encontrada no servidor (POST /clientes). Verifique se o backend atualizado está ativo.";
+                    } else if (/<!doctype html|<html/i.test(corpo)) {
+                        mensagem = `O servidor retornou uma página HTML inesperada (HTTP ${response.status}). Verifique a URL e as rotas do backend.`;
+                    } else {
+                        try {
+                            const dados = JSON.parse(corpo) as {
+                                message?: string;
+                                mensagem?: string;
+                                error?: string;
+                                detail?: string;
+                            };
+                            mensagem = dados.message ?? dados.mensagem ?? dados.error ?? dados.detail ?? corpo;
+                        } catch {
+                            mensagem = corpo;
+                        }
                     }
                 }
 

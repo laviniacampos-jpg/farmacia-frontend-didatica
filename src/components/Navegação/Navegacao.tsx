@@ -149,58 +149,6 @@ function Navegacao(): JSX.Element {
                     )}
 
 
-                    {/* CATEGORIAS */}
-
-                    {isAuthenticated && (
-
-                        <li>
-
-                            <button
-                                className="nav-link"
-                                onClick={() =>
-                                    navegar(
-                                        "/lista/categorias"
-                                    )
-                                }
-                                type="button"
-                            >
-
-                                <span>◇</span>
-
-                                Categorias
-
-                            </button>
-
-                        </li>
-
-                    )}
-
-
-                    {/* ESTOQUE */}
-
-                    {isAuthenticated && (
-
-                        <li>
-
-                            <button
-                                className="nav-link"
-                                onClick={() =>
-                                    navegar("/estoque")
-                                }
-                                type="button"
-                            >
-
-                                <span>▥</span>
-
-                                Estoque
-
-                            </button>
-
-                        </li>
-
-                    )}
-
-
                     {/* USUÁRIO */}
 
                     {isAuthenticated ? (

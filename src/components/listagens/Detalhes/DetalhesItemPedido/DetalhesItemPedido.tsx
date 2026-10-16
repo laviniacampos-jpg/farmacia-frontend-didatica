@@ -29,7 +29,7 @@ function DetalhesItemPedido({ id_venda, id_produto }: DetalhesItemPedidoProps): 
             setError(null);
 
             try {
-                const itens = await ItemPedidoRequests.listar();
+                const itens = await ItemPedidoRequests.listar(id_venda);
                 const itemEncontrado = Array.isArray(itens)
                     ? itens.find((itemAtual: ItemPedidoApi) =>
                         Number(itemAtual.id_venda) === id_venda &&

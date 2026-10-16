@@ -1,26 +1,25 @@
-import { type ComponentType } from 'react';
-import AuthRequests from '../../fetch/AuthRequests';
+import { createElement, type ComponentType, useEffect } from "react";
+import AuthRequests from "../../fetch/AuthRequests";
 
 interface ProtectedRouteProps {
-    element: ComponentType<any>;
+    element: ComponentType;
     props?: Record<string, unknown>;
 }
-const ProtectedRoute = ({
-    element: Element,
-    props,
-}: ProtectedRouteProps) => {
-    const isAuthenticated = !!(
-        localStorage.getItem('isAuth') === 'true' &&
-        localStorage.getItem('token') &&
-        AuthRequests.checkTokenExpiry()
-    );
+
+const ProtectedRoute = ({ element: Element, props }: ProtectedRouteProps) => {
+    const isAuthenticated = AuthRequests.isAuthenticated();
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            window.location.replace("/login");
+        }
+    }, [isAuthenticated]);
 
     if (!isAuthenticated) {
-        window.location.replace('/login');
         return null;
     }
 
-    return props ? <Element {...props} /> : <Element />;
+    return createElement(Element, props);
 };
 
 export default ProtectedRoute;

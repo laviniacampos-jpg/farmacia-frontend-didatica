@@ -1,14 +1,35 @@
+import type { ItemPedidoDTO } from "../components/dto/IntemPedidoDTO";
 import type { PedidoDTO } from "../components/dto/PedidoDTO";
+
+interface NovoPedidoDTO {
+    idCliente: number;
+    itens: ItemPedidoDTO[];
+}
+
+interface PedidoCriadoDTO {
+    idVenda: number;
+    mensagem?: string;
+}
+
+interface PedidoApiDTO {
+    id_venda?: number;
+    idVenda?: number;
+    id_cliente?: number;
+    idCliente?: number;
+    data_venda?: string;
+    dataVenda?: string;
+    nomeCliente?: string;
+}
 
 class PedidoRequests {
 
     private endpoint: string;
 
     constructor() {
-        this.endpoint = "http://localhost:3333/api/pedido";
+        this.endpoint = "http://localhost:3333/pedidos";
     }
 
-    async criar(pedido: PedidoDTO) {
+    async criar(pedido: NovoPedidoDTO): Promise<PedidoCriadoDTO> {
         try {
 
             const token = localStorage.getItem("token");
@@ -33,10 +54,11 @@ class PedidoRequests {
                     try {
                         const dados = JSON.parse(corpo) as {
                             message?: string;
+                            mensagem?: string;
                             error?: string;
                             detail?: string;
                         };
-                        mensagem = dados.message ?? dados.error ?? dados.detail ?? corpo;
+                        mensagem = dados.message ?? dados.mensagem ?? dados.error ?? dados.detail ?? corpo;
                     } catch {
                         mensagem = corpo;
                     }
@@ -47,7 +69,7 @@ class PedidoRequests {
                 });
             }
 
-            return true;
+            return await response.json() as PedidoCriadoDTO;
 
         } catch (error) {
             console.error("Erro ao criar pedido:", error);
@@ -55,7 +77,7 @@ class PedidoRequests {
         }
     }
 
-    async listar() {
+    async listar(): Promise<PedidoDTO[]> {
         try {
 
             const token = localStorage.getItem("token");
@@ -69,7 +91,13 @@ class PedidoRequests {
                 }
             );
 
-            return await response.json();
+            if (!response.ok) return [];
+            const pedidos = await response.json() as PedidoApiDTO[];
+            return Array.isArray(pedidos) ? pedidos.map((pedido) => ({
+                id_venda: pedido.id_venda ?? pedido.idVenda,
+                id_cliente: pedido.id_cliente ?? pedido.idCliente ?? 0,
+                data_venda: pedido.data_venda ?? pedido.dataVenda,
+            })) : [];
 
         } catch (error) {
             console.error(error);

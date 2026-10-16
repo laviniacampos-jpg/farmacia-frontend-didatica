@@ -78,39 +78,42 @@ class AuthRequests {
             'isAuth'
         ];
 
-        keys.map(key => localStorage.removeItem(key));
-        window.location.href = `/login`;
+        keys.forEach(key => localStorage.removeItem(key));
+        window.location.href = "/login";
     }
 
     /**
-     * Verifica a validade do token
-     * @returns **true** caso token válido, **false** caso token inválido
+     * Verifica a validade do token sem executar redirecionamento durante a leitura.
+     * @returns **true** caso token válido, **false** caso token inválido ou inválido
      */
-    checkTokenExpiry() {
-        // recupera o valor do token no localstorage
+    checkTokenExpiry(): boolean {
         const token = localStorage.getItem('token');
-        
-        // verifica se o valor é diferente de vazio
-        if (token) {
-            // recupera a data de expiração do token
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            // recuepra a hora de expiração do token
-            const expiry = payload.exp;
-            // pega a data e hora atual
-            const now = Math.floor(Date.now() / 1000);
 
-            // verifica se o token está expirado
-            if (expiry < now) {
-                // invoca a função para remover o token do localstorage
-                this.removeToken();
-                // retorna false
+        if (!token) {
+            return false;
+        }
+
+        try {
+            const payloadBase64 = token.split('.')[1];
+
+            if (!payloadBase64) {
                 return false;
             }
-            // caso o token não esteja expirado, retorna true
-            return true;
+
+            const payload = JSON.parse(
+                decodeURIComponent(
+                    escape(atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/")))
+                )
+            ) as { exp?: number };
+
+            return typeof payload.exp === "number" && payload.exp > Math.floor(Date.now() / 1000);
+        } catch {
+            return false;
         }
-        // caso o token esteja vazio, retorna false
-        return false;
+    }
+
+    isAuthenticated(): boolean {
+        return localStorage.getItem("isAuth") === "true" && this.checkTokenExpiry();
     }
 }
 

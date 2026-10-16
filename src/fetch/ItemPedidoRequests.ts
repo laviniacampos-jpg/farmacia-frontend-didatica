@@ -1,14 +1,19 @@
 import type { ItemPedidoDTO } from "../components/dto/IntemPedidoDTO";
 
+interface ItemPedidoResposta extends ItemPedidoDTO {
+    id_venda: number;
+    id_produto: number;
+}
+
 class ItemPedidoRequests {
 
     private endpoint: string;
 
     constructor() {
-        this.endpoint = "http://localhost:3333/api/ItemPedido";
+        this.endpoint = "http://localhost:3333/itens";
     }
 
-    async criar(item: ItemPedidoDTO) {
+    async criar(item: ItemPedidoDTO & { idVenda: number }) {
         try {
 
             const token = localStorage.getItem("token");
@@ -33,10 +38,11 @@ class ItemPedidoRequests {
                     try {
                         const dados = JSON.parse(corpo) as {
                             message?: string;
+                            mensagem?: string;
                             error?: string;
                             detail?: string;
                         };
-                        mensagem = dados.message ?? dados.error ?? dados.detail ?? corpo;
+                        mensagem = dados.message ?? dados.mensagem ?? dados.error ?? dados.detail ?? corpo;
                     } catch {
                         mensagem = corpo;
                     }
@@ -55,13 +61,15 @@ class ItemPedidoRequests {
         }
     }
 
-    async listar() {
+    async listar(idVenda?: number): Promise<ItemPedidoResposta[]> {
         try {
+
+            if (!idVenda) return [];
 
             const token = localStorage.getItem("token");
 
             const response = await fetch(
-                this.endpoint,
+                `${this.endpoint}/${idVenda}`,
                 {
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -69,7 +77,16 @@ class ItemPedidoRequests {
                 }
             );
 
-            return await response.json();
+            if (!response.ok) return [];
+            const itens = await response.json() as Array<Partial<ItemPedidoResposta>>;
+            return Array.isArray(itens) ? itens.map((item) => ({
+                ...item,
+                id_venda: idVenda,
+                id_produto: Number(item.id_produto ?? item.idProduto),
+                idProduto: Number(item.idProduto ?? item.id_produto),
+                qtdProduto: Number(item.qtdProduto),
+                precoUnit: Number(item.precoUnit),
+            })) as ItemPedidoResposta[] : [];
 
         } catch (error) {
             console.error(error);
@@ -79,30 +96,9 @@ class ItemPedidoRequests {
     async obterItemPorId(id: number) {
 
         try {
-
-            const token = localStorage.getItem("token");
-
-            const response = await fetch(
-                `${this.endpoint}/${id}`,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...(token
-                            ? {
-                                Authorization: `Bearer ${token}`
-                            }
-                            : {})
-                    }
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error("Item do pedido não encontrado.");
-            }
-
-            return await response.json();
+            const itens = await this.listar(id);
+            if (!itens.length) throw new Error("Item do pedido não encontrado.");
+            return itens;
 
         } catch (error) {
 

@@ -5,7 +5,7 @@ class ProdutoRequests {
     private endpoint: string;
 
     constructor() {
-        this.endpoint = "http://localhost:3333/api/produtos";
+        this.endpoint = "http://localhost:3333/produtos";
     }
 
     async criar(produto: ProdutoDTO) {
@@ -21,7 +21,13 @@ class ProdutoRequests {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     },
-                    body: JSON.stringify(produto)
+                    body: JSON.stringify({
+                        descricao: produto.descricao,
+                        validade: produto.validade ?? null,
+                        preco: produto.preco,
+                        qtdEstoque: produto.qtd_estoque,
+                        qtdMinEstoque: produto.qtd_min_estoque,
+                    })
                 }
             );
 
@@ -33,10 +39,11 @@ class ProdutoRequests {
                     try {
                         const dados = JSON.parse(corpo) as {
                             message?: string;
+                                mensagem?: string;
                             error?: string;
                             detail?: string;
                         };
-                        mensagem = dados.message ?? dados.error ?? dados.detail ?? corpo;
+                            mensagem = dados.message ?? dados.mensagem ?? dados.error ?? dados.detail ?? corpo;
                     } catch {
                         mensagem = corpo;
                     }
@@ -69,7 +76,21 @@ class ProdutoRequests {
                 }
             );
 
-            return await response.json();
+            if (!response.ok) return [];
+            const produtos = await response.json() as Array<ProdutoDTO & {
+                idProduto?: number;
+                qtdEstoque?: number;
+                qtdMinEstoque?: number;
+            }>;
+
+            return Array.isArray(produtos) ? produtos.map((produto) => ({
+                id_produto: produto.id_produto ?? produto.idProduto,
+                descricao: produto.descricao,
+                validade: produto.validade,
+                preco: Number(produto.preco),
+                qtd_estoque: Number(produto.qtd_estoque ?? produto.qtdEstoque ?? 0),
+                qtd_min_estoque: Number(produto.qtd_min_estoque ?? produto.qtdMinEstoque ?? 0),
+            })) : [];
 
         } catch (error) {
             console.error(error);
@@ -79,30 +100,10 @@ class ProdutoRequests {
     async obterProdutoPorId(id: number) {
 
         try {
-
-            const token = localStorage.getItem("token");
-
-            const response = await fetch(
-                `${this.endpoint}/${id}`,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...(token
-                            ? {
-                                Authorization: `Bearer ${token}`
-                            }
-                            : {})
-                    }
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error("Produto não encontrado.");
-            }
-
-            return await response.json();
+            const resposta = await this.listar();
+            const produto = resposta.find((item: ProdutoDTO) => item.id_produto === id);
+            if (!produto) throw new Error("Produto não encontrado.");
+            return produto;
 
         } catch (error) {
 
